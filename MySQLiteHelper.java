@@ -5,9 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-/**
- * Created by dhruvesh mehta on 16-09-2016.
- */
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_COMMENTS = "message";

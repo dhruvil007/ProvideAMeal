@@ -14,10 +14,6 @@ import android.text.TextUtils;
 
 import java.util.List;
 
-/**
- * Created by The Pixel Factory on 23-10-2016.
- */
-
 public class NotificationUtils  {
 
 

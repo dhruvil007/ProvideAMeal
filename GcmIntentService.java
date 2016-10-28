@@ -21,9 +21,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by dhruvesh mehta on 22-09-2016.
- */
 public class GcmIntentService extends IntentService {
 
     private static final String TAG = GcmIntentService.class.getSimpleName();

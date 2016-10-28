@@ -1,8 +1,5 @@
 package com.codeshastra.coderr.provideameal;
 
-/**
- * Created by dhruvesh mehta on 16-09-2016.
- */
 public class Message {
     private long id;
     private String name;
@@ -48,9 +45,6 @@ public class Message {
     public void setMeals(String meals) {
         this.meals = meals;
     }
-
-
-
 
     // Will be used by the ArrayAdapter in the ListView
     @Override

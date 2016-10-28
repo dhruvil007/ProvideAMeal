@@ -12,9 +12,6 @@ import com.google.android.gms.gcm.GcmListenerService;
 import java.text.DateFormat;
 import java.util.Date;
 
-/**
- * Created by dhruvesh mehta on 22-09-2016.
- */
 public class MyGcmPushReceiver extends GcmListenerService {
 Message msg;
     private static final String TAG = MyGcmPushReceiver.class.getSimpleName();
