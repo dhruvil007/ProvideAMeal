@@ -2,9 +2,7 @@ package com.codeshastra.coderr.provideameal;
 
 public class Message {
     private long id;
-    private String name;
-    private String address;
-    private String number,meals;
+    private String name, address, number, meals, email;
 
     public long getId() {
         return id;
@@ -44,6 +42,14 @@ public class Message {
 
     public void setMeals(String meals) {
         this.meals = meals;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     // Will be used by the ArrayAdapter in the ListView

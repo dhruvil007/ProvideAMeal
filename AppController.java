@@ -3,7 +3,6 @@ package com.codeshastra.coderr.provideameal;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import android.text.TextUtils;
 
 import com.android.volley.Request;
@@ -44,8 +43,6 @@ public class AppController extends Application {
         }
         return mRequestQueue;
     }
-
-
 
     public <T> void addToRequestQueue(Request<T> req, String tag) {
         // set the default tag if tag is empty

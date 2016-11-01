@@ -1,6 +1,7 @@
 package com.codeshastra.coderr.provideameal;
 
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,12 +26,13 @@ import java.util.Map;
 
 public class SummaryActivity extends AppCompatActivity {
 
-    TextView name,v_name,v_contact;
-    TextView address;
-    TextView meals;
-    TextView contact;
-    Intent summary;
-    String vname,c;
+    private TextView name, v_name, v_contact;
+    private TextView address;
+    private TextView meals;
+    private TextView contact;
+    private ProgressDialog progressDialog;
+    private Intent summary;
+    private String vname, c;
     private NotificationUtils notificationUtils;
 
     @Override
@@ -42,14 +44,20 @@ public class SummaryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
 
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading");
+        progressDialog.setCancelable(false);
+        if (!progressDialog.isShowing())
+            progressDialog.show();
+
         summary = getIntent();
 
         name = (TextView) findViewById(R.id.text_name);
         address = (TextView) findViewById(R.id.text_address);
         meals = (TextView) findViewById(R.id.text_meals);
-        contact =  (TextView) findViewById(R.id.text_contact);
-        v_contact =  (TextView) findViewById(R.id.contact);
-        v_name =  (TextView) findViewById(R.id.name);
+        contact = (TextView) findViewById(R.id.text_contact);
+        v_contact = (TextView) findViewById(R.id.contact);
+        v_name = (TextView) findViewById(R.id.name);
 
         String nameField, addressField, mealsField, contactField;
         nameField = "Name: " + summary.getStringExtra("name");
@@ -67,7 +75,6 @@ public class SummaryActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-
     private void sendToServer() {
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 "http://provideameal.esy.es/pam_donate.php", new Response.Listener<String>() {
@@ -79,9 +86,11 @@ public class SummaryActivity extends AppCompatActivity {
                     String status = obj.getString("status");
                     vname = obj.getString("name");
                     c = obj.getString("contact");
-                    v_name.setText("Name of Volunteer Assigned: "+vname);
-                    v_contact.setText("Number: "+c);
-                    Log.e("name:",vname);
+                    v_name.setText("Name of Volunteer Assigned: " + vname);
+                    v_contact.setText("Number: " + c);
+                    if (progressDialog.isShowing())
+                        progressDialog.hide();
+                    Log.e("name:", vname);
                     // Check for error node in json
                     if (status.equals("success")) {
                         /*if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
@@ -90,41 +99,30 @@ public class SummaryActivity extends AppCompatActivity {
                             Intent pushNotification = new Intent("pushNotification");
                             pushNotification.putExtra("message", name);
                             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(pushNotification);
-
                             showNotificationMessage(getApplicationContext(), "Provide A Meal", name,resultIntent);
-
                             // play notification sound
-                            //  NotificationUtils notificationUtils = new NotificationUtils();
+                            // NotificationUtils notificationUtils = new NotificationUtils();
                             // notificationUtils.playNotificationSound();
                         } else {
-
                             Intent resultIntent = new Intent(SummaryActivity.this, SummaryActivity.class);
                             resultIntent.putExtra("message", name);
-
                         }*/
-
                         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
                         mBuilder.setSmallIcon(R.mipmap.ic_launcher);
                         mBuilder.setContentTitle("Provide a Meal");
                         mBuilder.setContentText("Volunteer Assigned: " + vname);
-
                         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-// notificationID allows you to update the notification later on.
                         mNotificationManager.notify(100, mBuilder.build());
-
-                       /* Intent resultIntent = new Intent(SummaryActivity.this, SummaryActivity.class);
-                        resultIntent.putExtra("message", name);
-                            showNotificationMessage(getApplicationContext(), "Provide A Meal", name,resultIntent);
-*/
-                    }
-
-                    else {
+                    } else {
                         Toast.makeText(getApplicationContext(), "Unable to send information to our server. ", Toast.LENGTH_LONG).show();
+                        if (progressDialog.isShowing())
+                            progressDialog.hide();
                     }
 
                 } catch (JSONException e) {
                     Log.e("", "json parsing error: " + e.getMessage());
+                    if (progressDialog.isShowing())
+                        progressDialog.hide();
                     //Toast.makeText(getApplicationContext(), "Json parse error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -141,14 +139,13 @@ public class SummaryActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 //   String id =token.substring(6,token.length()-1);
-                params.put("name",summary.getStringExtra("name") );
-                params.put("address",summary.getStringExtra("address") );
+                params.put("name", summary.getStringExtra("name"));
+                params.put("address", summary.getStringExtra("address"));
                 params.put("email", summary.getStringExtra("email"));
                 params.put("quantity", summary.getStringExtra("meals"));
                 params.put("contact", summary.getStringExtra("contact"));
                 params.put("latitude", summary.getStringExtra("latitude"));
                 params.put("longitude", summary.getStringExtra("longitude"));
-
                 Log.e("", params.toString());
                 return params;
             }
@@ -156,10 +153,11 @@ public class SummaryActivity extends AppCompatActivity {
         //Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq);
     }
+
     private void showNotificationMessage(Context context, String title, String message, Intent intent) {
         notificationUtils = new NotificationUtils(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        notificationUtils.showNotificationMessage(title,message,intent);
+        notificationUtils.showNotificationMessage(title, message, intent);
     }
 
 }

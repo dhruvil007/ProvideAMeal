@@ -36,14 +36,13 @@ public class ListActivity extends AppCompatActivity implements Adapter.ClickList
         textView = (TextView) findViewById(R.id.list_text_view);
 
         MainActivity.returnFromListActivity = true;
-        MessagesDataSource m=new MessagesDataSource(this);
+        MessagesDataSource m = new MessagesDataSource(this);
         m.open();
         paperList = m.getAllMessages();
         Log.e("Size", "" + paperList.size());
         if (paperList.size() == 0) {
             textView.setText("No Requests Pending :<");
-        }
-        else {
+        } else {
             textView.setText(null);
         }
         m.close();
@@ -54,18 +53,6 @@ public class ListActivity extends AppCompatActivity implements Adapter.ClickList
         listRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    /*public static List<DonateRequests> getDataRequests() {
-        List<DonateRequests> data = new ArrayList<>();
-
-        for (int i = 0; i < donateRequestNames.length; i++) {
-            DonateRequests current = new DonateRequests();
-            current.donorName = donateRequestNames[i];
-            current.donorNumber = donateRequestNumbers[i];
-            data.add(current);
-        }
-        return data;
-    }
-*/
     @Override
     public void itemClicked(View view, int position) {
         Intent intent = new Intent(this, RequestSummaryActivity.class);
@@ -73,6 +60,7 @@ public class ListActivity extends AppCompatActivity implements Adapter.ClickList
         intent.putExtra("donorMeals", paperList.get(position).getMeals());
         intent.putExtra("donorContact", paperList.get(position).getNumber());
         intent.putExtra("donorAddress", paperList.get(position).getAddress());
+        intent.putExtra("donorEmail", paperList.get(position).getEmail());
         startActivity(intent);
         finish();
     }
@@ -84,17 +72,15 @@ public class ListActivity extends AppCompatActivity implements Adapter.ClickList
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_clear) {
-            MessagesDataSource m=new MessagesDataSource(this);
+            MessagesDataSource m = new MessagesDataSource(this);
             m.open();
             m.deleteAll();
             m.close();

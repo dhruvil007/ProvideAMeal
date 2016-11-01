@@ -138,11 +138,10 @@ public class FragmentDonate extends Fragment implements GoogleApiClient.Connecti
                         summary.putExtra("address", addressEditText.getText().toString());
                         summary.putExtra("meals", mealsEditText.getText().toString());
                         summary.putExtra("contact", contactEditText.getText().toString());
-                        summary.putExtra("email", contactEditText.getText().toString());
+                        summary.putExtra("email", emailEditText.getText().toString());
                         summary.putExtra("latitude", String.valueOf(latitude));
                         summary.putExtra("longitude", String.valueOf(longitude));
                         getActivity().startActivity(summary);
-
                     }
                 }
             }
@@ -237,20 +236,6 @@ public class FragmentDonate extends Fragment implements GoogleApiClient.Connecti
         final AlertDialog alert = builder.create();
         alert.show();
     }
-
-//    public void setFieldsToNull() {
-//        nameEditText.setText(null);
-//        nameTextInputLayout.setError(null);
-//        nameTextInputLayout.setErrorEnabled(false);
-//        addressEditText.setText(null);
-//        addressTextInputLayout.setErrorEnabled(false);
-//        mealsEditText.setText(null);
-//        mealsTextInputLayout.setErrorEnabled(false);
-//        contactEditText.setText(null);
-//        contactTextInputLayout.setErrorEnabled(false);
-//        emailEditText.setText(null);
-//        emailTextInputLayout.setErrorEnabled(false);
-//    }
 
     private class MyTextWatcher implements TextWatcher {
 

@@ -87,12 +87,6 @@ public class FragmentRegister extends Fragment {
                 if (isFormValid()) {
                     Log.e("FDonate", "All valid");
                     Toast.makeText(mContext, "Sent", Toast.LENGTH_SHORT).show();
-//                    Intent summary = new Intent(getActivity(), SummaryActivity.class);
-//                    summary.putExtra("name", nameEditText.getText().toString());
-//                    summary.putExtra("address", passwordEditText.getText().toString());
-//                    summary.putExtra("meals", occupationEditText.getText().toString());
-//                    summary.putExtra("contact", contactEditText.getText().toString());
-//                    getActivity().startActivity(summary);
                     nameEditText.setText(null);
                     nameTextInputLayout.setErrorEnabled(false);
                     passwordEditText.setText(null);
@@ -212,7 +206,6 @@ public class FragmentRegister extends Fragment {
                     } else {
                         Toast.makeText(getActivity(), "Unable to send information to our server. ", Toast.LENGTH_LONG).show();
                     }
-
                 } catch (JSONException e) {
                     Log.e("", "json parsing error: " + e.getMessage());
                     //Toast.makeText(getApplicationContext(), "Json parse error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -230,14 +223,13 @@ public class FragmentRegister extends Fragment {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                //   String id =token.substring(6,token.length()-1);
+                // String id =token.substring(6,token.length()-1);
                 params.put("name", nameEditText.getText().toString());
                 params.put("password", passwordEditText.getText().toString());
                 params.put("occupation", occupationEditText.getText().toString());
                 params.put("contact", contactEditText.getText().toString());
                 params.put("email", emailEditText.getText().toString());
                 params.put("address", addressEditText.getText().toString());
-
                 Log.e("", params.toString());
                 return params;
             }

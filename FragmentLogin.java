@@ -112,6 +112,11 @@ public class FragmentLogin extends Fragment implements GoogleApiClient.Connectio
         buildGoogleApiClient();
         googleApiClient.connect();
 
+        if (RequestSummaryActivity.isRequestCanceled) {
+            Intent intent = new Intent(getActivity(), ListActivity.class);
+            startActivity(intent);
+        }
+
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -161,6 +166,7 @@ public class FragmentLogin extends Fragment implements GoogleApiClient.Connectio
                         }
                     }
                     progressDialog.setMessage("Logging in");
+                    progressDialog.setCancelable(false);
                     progressDialog.show();
                 }
                 if (checkPlayServices()) {
@@ -216,7 +222,6 @@ public class FragmentLogin extends Fragment implements GoogleApiClient.Connectio
                 try {
                     JSONObject obj = new JSONObject(response);
                     String status = obj.getString("status");
-
                     // Check for error node in json
                     if (status.equals("success")) {
 
@@ -224,14 +229,11 @@ public class FragmentLogin extends Fragment implements GoogleApiClient.Connectio
                             progressDialog.hide();
                         Intent intent = new Intent(getActivity(), ListActivity.class);
                         startActivity(intent);
-
-
                     } else {
                         Toast.makeText(getActivity(), "Wrong username/password", Toast.LENGTH_LONG).show();
                         if (progressDialog.isShowing())
                             progressDialog.hide();
                     }
-
                 } catch (JSONException e) {
                     Log.e("", "json parsing error: " + e.getMessage());
                     //Toast.makeText(getApplicationContext(), "Json parse error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -241,7 +243,6 @@ public class FragmentLogin extends Fragment implements GoogleApiClient.Connectio
             @Override
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse networkResponse = error.networkResponse;
-
                 Log.e("", "Volley error: " + error.getMessage() + ", code: " + networkResponse);
                 Toast.makeText(getActivity(), "There was an error connecting to the server. Please try again later ", Toast.LENGTH_SHORT).show();
                 if (progressDialog.isShowing())
@@ -251,14 +252,12 @@ public class FragmentLogin extends Fragment implements GoogleApiClient.Connectio
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                //   String id =token.substring(6,token.length()-1);
+                // String id =token.substring(6,token.length()-1);
                 params.put("email", emailEditText.getText().toString());
                 params.put("password", passworkEditText.getText().toString());
                 params.put("latitude", String.valueOf(latitude));
                 params.put("longitude", String.valueOf(longitude));
                 params.put("token", token);
-
-
                 Log.e("", params.toString());
                 return params;
             }
@@ -271,11 +270,9 @@ public class FragmentLogin extends Fragment implements GoogleApiClient.Connectio
     @Override
     public void onResume() {
         super.onResume();
-
         // register GCM registration complete receiver
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(Config.REGISTRATION_COMPLETE));
-
         // register new push message receiver
         // by doing this, the activity will be notified each time a new message arrives
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mRegistrationBroadcastReceiver,

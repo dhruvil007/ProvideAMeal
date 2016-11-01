@@ -20,6 +20,9 @@ public class RequestSummaryActivity extends AppCompatActivity {
     public String donorNumber;
     public String donorAddress;
     public String donorContact;
+    public String donorEmail;
+
+    public static boolean isRequestCanceled;
 
     public Button submitCompletion;
     public Button call;
@@ -30,9 +33,9 @@ public class RequestSummaryActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-            Intent intent = new Intent(this, ListActivity.class);
-            startActivity(intent);
-            finish();
+        Intent intent = new Intent(this, ListActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -55,31 +58,9 @@ public class RequestSummaryActivity extends AppCompatActivity {
         numberTextView = (TextView) findViewById(R.id.text_view_summary_number);
         call = (Button) findViewById(R.id.button_summary_call);
         submitCompletion = (Button) findViewById(R.id.button_summary_submit);
+        isRequestCanceled = false;
 
         final Context context = this;
-        submitCompletion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MessagesDataSource m = new MessagesDataSource(context);
-                m.open();
-                List<Message> list = m.getAllMessages();
-                int counter;
-                for (counter = 0; counter < list.size(); counter++) {
-                    String openRequestName = nameTextView.getText().toString();
-                    Message current = list.get(counter);
-                    long id;
-                    if (current.getName().equals(openRequestName))
-                        break;
-                }
-                Log.e("NameDeletion", list.get(counter).getName());
-                m.deleteMessage(list.get(counter));
-                m.close();
-                Toast.makeText(getApplicationContext(), "Request Cleared", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), ListActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
         call.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +76,35 @@ public class RequestSummaryActivity extends AppCompatActivity {
         donorNumber = "Number of Meals: " + incomingIntent.getStringExtra("donorMeals");
         donorAddress = incomingIntent.getStringExtra("donorAddress");
         donorContact = incomingIntent.getStringExtra("donorContact");
+        donorEmail = incomingIntent.getStringExtra("donorEmail");
+
+        submitCompletion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MessagesDataSource m = new MessagesDataSource(context);
+                m.open();
+                List<Message> list = m.getAllMessages();
+                int counter;
+                for (counter = 0; counter < list.size(); counter++) {
+                    String openRequestName = nameTextView.getText().toString();
+                    Message current = list.get(counter);
+                    long id;
+                    if (current.getName().equals(openRequestName))
+                        break;
+                }
+                isRequestCanceled = true;
+                Log.e("NameDeletion", list.get(counter).getName());
+                m.deleteMessage(list.get(counter));
+                m.close();
+                Intent mailIntent = new Intent(Intent.ACTION_SENDTO);
+                String messageBody = "Your donate request has been completed by a volunteer.\nIf you face any issues, please contact:\n<placeholder>\n";
+                String uriText = "mailto:" + Uri.encode(donorEmail) + "?subject=" + Uri.encode("Request Completion Alert") + "&body=" + Uri.encode(messageBody);
+                mailIntent.setData(Uri.parse(uriText));
+                startActivity(mailIntent);
+                Toast.makeText(getApplicationContext(), "Request Cleared", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
 
         nameTextView.setText(donorName);
         numberTextView.setText(donorNumber);

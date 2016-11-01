@@ -14,11 +14,10 @@ import android.text.TextUtils;
 
 import java.util.List;
 
-public class NotificationUtils  {
-
-
+public class NotificationUtils {
 
     private Context mContext;
+
     public NotificationUtils() {
     }
 
@@ -27,7 +26,7 @@ public class NotificationUtils  {
     }
 
     public void showNotificationMessage(String title, String message, Intent intent) {
-        showNotificationMessage(title, message,intent, null);
+        showNotificationMessage(title, message, intent, null);
     }
 
     public void showNotificationMessage(final String title, final String message, Intent intent, String imageUrl) {
@@ -35,10 +34,8 @@ public class NotificationUtils  {
         if (TextUtils.isEmpty(message))
             return;
 
-
         // notification icon
         final int icon = R.mipmap.ic_launcher;
-
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         final PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
@@ -50,16 +47,12 @@ public class NotificationUtils  {
 
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                 mContext);
-
-        //   final Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-        //         + "://" + mContext.getPackageName() + "/raw/notification");
+        // final Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
+        // + "://" + mContext.getPackageName() + "/raw/notification");
 
         if (!TextUtils.isEmpty(imageUrl)) {
-
             showSmallNotification(mBuilder, icon, title, message, resultPendingIntent);
-
-        }
-        else {
+        } else {
             showSmallNotification(mBuilder, icon, title, message, resultPendingIntent);
             // playNotificationSound();
         }
@@ -67,7 +60,6 @@ public class NotificationUtils  {
 
 
     private void showSmallNotification(NotificationCompat.Builder mBuilder, int icon, String title, String message, PendingIntent resultPendingIntent) {
-
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         Notification notification;
         notification = mBuilder.setSmallIcon(icon).setTicker(title).setWhen(0)
@@ -85,10 +77,6 @@ public class NotificationUtils  {
         notificationManager.notify(100, notification);
     }
 
-
-    /**
-     * Method checks if the app is in background or not
-     */
     public static boolean isAppIsInBackground(Context context) {
         boolean isInBackground = true;
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -119,6 +107,4 @@ public class NotificationUtils  {
         NotificationManager notificationManager = (NotificationManager) AppController.getInstance().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
     }
-
-
 }
